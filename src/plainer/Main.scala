@@ -109,6 +109,15 @@ object Main extends App {
         }
     }
 	
+	def getTitleFromUrl(url: String): String = {
+	    var stories = new ListBuffer[String]
+	    val cleaner = new HtmlCleaner
+	    val props = cleaner.getProperties
+	    val rootNode = cleaner.clean(new URL(url))
+	    val elements = rootNode.getElementsByName("title", true)
+	    return elements(0).getText.toString
+	}
+	
 	def getHeadlinesFromUrl(url: String): List[String] = {
 	    var stories = new ListBuffer[String]
 	    val cleaner = new HtmlCleaner
@@ -122,8 +131,8 @@ object Main extends App {
 	            val text = StringEscapeUtils.unescapeHtml4(elem.getText.toString)
 	            stories += text
 	        }
-	  }
-	   //return stories.filter(storyContainsDesiredPhrase(_)).toList
+	    }
+	    //return stories.filter(storyContainsDesiredPhrase(_)).toList
 	    return List("this", "is", "just", "a", "sample")
 	}
 
@@ -177,7 +186,9 @@ object Main extends App {
 		    println("No name value")
 		}
 
-		printUrlContent("foo")
+		// printUrlContent("foo")
+		
+		println(getTitleFromUrl("http://scala-lang.org"))
 		
 	}
 }
