@@ -17,35 +17,31 @@ import java.net.URL
  */
 
 class Box(paramKey: String, paramValue: Int) extends Cache[String, Int] {
-  val key: String = paramKey
-  // private var value = None: Option[Int]
-//  private var value: Option[Int] = paramValue
-  private var value: Option[Int] = Some(paramValue)
-  
-  def get(paramKey: String): Option[Int] = {
-    if (key.equals(paramKey)) value 
-    else None
-  }
-  
-  def put(paramKey: String, paramValue: Int) = { 
-    if (key.equals(paramKey)) {
-      value = Some(paramValue)
-      true
-    }
-    else false
-  }
-  
-  def delete(paramKey: String) = {
-      if (key.equals(paramKey)) {
-        value = None: Option[Int]
-        true
-      }
-      else false
-  }
-  
-  override def toString: String = {
-    "I'm a Box: key %s, value %s".format(key, value)
-  }
+	val key: String = paramKey;
+	private var value: Option[Int] = Some(paramValue)
+
+	def get(paramKey: String): Option[Int] = {
+		if (key.equals(paramKey)) value 
+		else None
+	}
+
+	def put(paramKey: String, paramValue: Int) = { 
+		if (key.equals(paramKey)) {
+			value = Some(paramValue)
+			true
+		} else false
+	}
+
+	def delete(paramKey: String) = {
+		if (key.equals(paramKey)) {
+			value = None: Option[Int]
+			true
+		} else false
+	}
+
+	override def toString: String = {
+				"I'm a Box: key %s, value %s".format(key, value)
+	}
 }
 
 object Main extends App {
@@ -57,7 +53,7 @@ object Main extends App {
 
 	def adder(m: Int, n: Int) =  m + n 
 
-			def plusOne = {
+	def plusOne = {
 		(x: Int) => x + 1
 	}
 
@@ -83,57 +79,66 @@ object Main extends App {
 
 	def capitalizeAll(args: String*) = {
 		args.map { arg =>
-			arg.capitalize
+		arg.capitalize
 		}
 	}
-	
+
 	def getRandomString : String = {
-	  RandomStringGenerator
-	  	.randomStringTailRecursive(nextInt(5), Nil)
-	  	.mkString(", ")
+			RandomStringGenerator
+			.randomStringTailRecursive(nextInt(5), Nil)
+			.mkString(", ")
 	}
-	
+
+	def getSourceFromURL(url: String): Option[String] = {
+			import scala.io.Source
+			try {
+				val html = Source.fromURL(url)
+						Some(html.mkString)
+			} catch {
+			case e: java.net.MalformedURLException => None
+			}
+	}
+
 	def printUrlContent(url: String) = {
-	  println("I'm not gonna print %s".format(url))
-	  import scala.io.Source
-      val html = Source.fromURL("http://scala-lang.org/")
-	  val s = html.mkString
-	  println(s)
+		println(getSourceFromURL(url))
 	}
-	
+
 	def toInt(in: String): Option[Int] = {
-        try {
-            Some(Integer.parseInt(in.trim))
-        } catch {
-            case e: NumberFormatException => None
-        }
-    }
-	
-	def getTitleFromUrl(url: String): String = {
-	    var stories = new ListBuffer[String]
-	    val cleaner = new HtmlCleaner
-	    val props = cleaner.getProperties
-	    val rootNode = cleaner.clean(new URL(url))
-	    val elements = rootNode.getElementsByName("title", true)
-	    return elements(0).getText.toString
+		try {
+			Some(Integer.parseInt(in.trim))
+		} catch {
+		case e: NumberFormatException => None
+		}
 	}
-	
+
+	def getTitleFromUrl(url: String): List[String] = {
+		var stories = new ListBuffer[String]
+		val cleaner = new HtmlCleaner
+		val props = cleaner.getProperties
+		val rootNode = cleaner.clean(new URL(url))
+		val elements = rootNode.getElementsByName("title", true)
+		return elements.map {
+			el => 
+			el.getText.toString
+		}.toList
+	}
+
 	def getHeadlinesFromUrl(url: String): List[String] = {
-	    var stories = new ListBuffer[String]
-	    val cleaner = new HtmlCleaner
-	    val props = cleaner.getProperties
-	    val rootNode = cleaner.clean(new URL(url))
-	    val elements = rootNode.getElementsByName("a", true)
-	    for (elem <- elements) {
-	        val classType = elem.getAttributeByName("class")
-	        if (classType != null && classType.equalsIgnoreCase("articleTitle")) {
-	            // stories might be "dirty" with text like "'", clean it up
-	            val text = StringEscapeUtils.unescapeHtml4(elem.getText.toString)
-	            stories += text
-	        }
-	    }
-	    //return stories.filter(storyContainsDesiredPhrase(_)).toList
-	    return List("this", "is", "just", "a", "sample")
+		var stories = new ListBuffer[String]
+				val cleaner = new HtmlCleaner
+				val props = cleaner.getProperties
+				val rootNode = cleaner.clean(new URL(url))
+				val elements = rootNode.getElementsByName("a", true)
+				for (elem <- elements) {
+					val classType = elem.getAttributeByName("class")
+							if (classType != null && classType.equalsIgnoreCase("articleTitle")) {
+								// stories might be "dirty" with text like "'", clean it up
+								val text = StringEscapeUtils.unescapeHtml4(elem.getText.toString)
+										stories += text
+							}
+				}
+		//return stories.filter(storyContainsDesiredPhrase(_)).toList
+		return List("this", "is", "just", "a", "sample")
 	}
 
 	override def main(args: Array[String]) {
@@ -141,17 +146,17 @@ object Main extends App {
 
 		val lst = List(1, 2, 3, 4, 5)
 		val arr = Array(1, 2, 3, 4, 5)
-		
+
 		assert(lst.scanLeft(0)(_ + _) == List(0, 1, 3, 6, 10, 15))
-		
+
 		val res = arr.reduceLeft(
-		    (a,b) => {
-		    	println("Summing %d + %d".format(a,b))
-		    	a+b
-		    })
-		
+		(a,b) => {
+			println("Summing %d + %d".format(a,b))
+			a+b
+		})
+
 		println("ReduceLeft: %d".format(res))
-		
+
 		println("RandomInt: %d".format(randomInt))
 		println("RandomsList: %s".format(randomList(randomInt)))
 		println("RandomInt+1: %d".format(plusOne(randomInt)))
@@ -163,33 +168,38 @@ object Main extends App {
 		val addOne = curriedAdd(1)
 
 		toInt("42") match {
-            case Some(i) => println(i)
-            case None => println("That didn't work.")
-        }
-		
-		val b = new Box("a", 1)
-		println(b)
-		
-		val aValue = b.get("a")
-		aValue match {
-          case Some(aValue) =>
-            println(aValue)
-          case None =>
-            println("No name value")
-        }
-		
-		val bValue = b.get("b")
-		  bValue match {
-		  case Some(bValue) =>
-	        println(bValue)
-		  case None =>
-		    println("No name value")
+			case Some(i) => println(i)
+			case None => println("That didn't work.")
 		}
 
-		// printUrlContent("foo")
-		
+		val b = new Box("a", 1)
+		println(b)
+
+		val aValue = b.get("a")
+		aValue match {
+			case Some(aValue) =>
+			println(aValue)
+			case None =>
+			println("No name value")
+		}
+
+		val bValue = b.get("b")
+		bValue match {
+			case Some(bValue) =>
+			println(bValue)
+			case None =>
+			println("No name value")
+		}
+
+		b.delete("a")
+		println(b)
+		b.delete("b")
+		println(b)
+
+		printUrlContent("foo")
+
 		println(getTitleFromUrl("http://scala-lang.org"))
-		
+
 	}
 }
 
