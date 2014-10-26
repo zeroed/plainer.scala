@@ -7,14 +7,23 @@ import java.util.{Date, Locale}
 import java.text.DateFormat
 import java.text.DateFormat._
 
+/**
+  Declaration    Getter?    Setter?
+  -----------    -------    -------
+  var            yes        yes
+  val            yes        no
+  default        no         no
+
+ */
 
 /**
  * @author eddie
  *
  */
-class Maybe(n: String, v: Option[Double], d: Date = new Date) {
-  val name: String = n
-  var value: Option[Double] = v
-  val date: Date = d
-  def nullame = value = None: Option[Double]
+class Maybe(
+  val name: String, 
+  var value: Option[Double], 
+  val date: Date = new Date) {
+  
+  def nullame() = value = None: Option[Double]
 }
