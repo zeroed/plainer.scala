@@ -7,6 +7,7 @@ package plainer.items
  * @author eddie
  *
  */
-class Stamp(content: String) {
-  def apply(times: Int) = List.fill(times){ content }.mkString(" ")
+class Stamp(val content: String) {
+  def apply(times: Int):String = List.fill(times){ content }.mkString(" ")
+  def concat(other: String):String = content + other
 }
