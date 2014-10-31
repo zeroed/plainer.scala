@@ -59,6 +59,36 @@ object FileReader extends App {
     }
   }
   
+  def countLines(filename: String): Int = {
+    val file = new File(filename)
+    if(file.exists()) Source.fromFile(file).getLines().length else -1
+  }
+
+  def createIfNecessary(destination: File): Boolean = {
+    if(destination.exists()) false else destination.createNewFile()
+  }
+  
+  def enqueueFileContent(destination: File) = {
+    createIfNecessary(destination)
+    val writer = new PrintWriter(destination)
+    var linesWritten = 0
+    try {
+      for (f <-(new File("/home/eddie/Downloads")).list  
+        if f.endsWith(".scala")
+        if !f.equals(destination.getName())) {
+        for(line <- Source.fromFile("/home/eddie/Downloads/" + f).getLines) {
+          writer.println(line)
+          linesWritten += 1
+        }
+        println("File %s, with %s lines copied into %s".format(
+            f, 
+            countLines("/home/eddie/Downloads/" + f),
+            destination))
+      }
+      println("written %d lines".format(linesWritten))
+    } finally writer.close()
+  }
+  
   def runIterator = {
     val it: Iterator[Int] = Iterator.range(1, 100)
     while (it.hasNext) {
@@ -67,6 +97,7 @@ object FileReader extends App {
     }
   }
   
-  readWrite
-  loanPattern
+  // readWrite
+  // loanPattern
+  enqueueFileContent(new File("/home/eddie/Downloads/foo.txt"))
 }
